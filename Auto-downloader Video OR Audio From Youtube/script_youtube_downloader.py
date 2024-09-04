@@ -6,8 +6,8 @@ MP3_OUTPUT_PATH = r'C:/Users/Utente/Desktop/WorkBench/Auto-downloader Video OR A
 MP4_OUTPUT_PATH = r'C:/Users/Utente/Desktop/WorkBench/Auto-downloader Video OR Audio From Youtube/mp4'
 
 # File di testo contenenti gli URL
-MP3_URL_FILE = r'C:/Users/Utente/Desktop/WorkBench/Auto-downloader Video OR Audio From Youtube/elenco url per mp3.txt'
-MP4_URL_FILE = r'C:/Users/Utente/Desktop/WorkBench/Auto-downloader Video OR Audio From Youtube/elenco url per mp4.txt'
+MP3_URL_FILE = r'C:/Users/Utente/Desktop/WorkBench/Auto-downloader Video OR Audio From Youtube/URL list to convert to mp3.txt'
+MP4_URL_FILE = r'C:/Users/Utente/Desktop/WorkBench/Auto-downloader Video OR Audio From Youtube/URL list to convert to mp4.txt'
 
 def download_video(url, audio_only):
     try:
