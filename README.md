@@ -5,3 +5,21 @@ Feel free to explore and see what I'm working on!
 - Merge PDFs
 - Auto-Downloader for Youtube content
 
+## How to Make the Projects Work:
+### Merge PDFs
+1. Clone this reposity
+2. Install the prerequisites with the command:
+```
+pip install datetime PyPDF2
+```
+3. Change the path of folders "merged" and "source" with your path.
+4. Put all the pdf in the "source" folder and run the python script
+### Auto-Downloader for Youtube content
+1. Clone this reposity
+2. Install the prerequisites with the command:
+```
+pip install yt_dlp
+```
+3. Change the path of folders with your path.
+4. Clean the file with the lists of mp3 and mp4 url's (or use it if you want this functionality)
+5. Run the python script
