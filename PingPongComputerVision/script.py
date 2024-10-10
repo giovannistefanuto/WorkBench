@@ -1,0 +1,120 @@
+import cv2
+import numpy as np
+import pyautogui
+
+def track_ball_in_video(video_path, output_video_path, area_margin=20, speed_factor=2):
+    # Carica il video
+    video = cv2.VideoCapture(video_path)
+
+    if not video.isOpened():
+        print("Errore nell'apertura del video.")
+        return
+
+    # Ottieni le proprietà del video
+    frame_width = int(video.get(cv2.CAP_PROP_FRAME_WIDTH))
+    frame_height = int(video.get(cv2.CAP_PROP_FRAME_HEIGHT))
+    fps = int(video.get(cv2.CAP_PROP_FPS))
+
+    # Calcola i frame di inizio e fine
+    start_time = 0  # Inizio a 34 secondi
+    end_time = 9    # Fine a 94 secondi
+    start_frame = int(start_time * fps)
+    end_frame = int(end_time * fps)
+
+    # Inizializza il video writer per salvare l'output
+    fourcc = cv2.VideoWriter_fourcc(*'mp4v')  # Codifica video in formato MP4
+    out = cv2.VideoWriter(output_video_path, fourcc, fps // speed_factor, (frame_width, frame_height))
+
+    # Definisci la sottrazione dello sfondo
+    backSub = cv2.createBackgroundSubtractorMOG2(history=500, varThreshold=50, detectShadows=False)
+
+    # Ottieni la risoluzione dello schermo
+    screen_width, screen_height = pyautogui.size()
+
+    # Imposta il frame corrente all'inizio del secondo desiderato
+    video.set(cv2.CAP_PROP_POS_FRAMES, start_frame)
+
+    # Inizializza le coordinate della pallina
+    prev_center = None
+    prev_radius = None
+
+    # Definisci i limiti orizzontali per l'area di interesse
+    left_limit = frame_width // 3 - area_margin  # Limitare alla parte centrale del frame
+    right_limit = 2 * frame_width // 3 + area_margin
+
+    while True:
+        current_frame = int(video.get(cv2.CAP_PROP_POS_FRAMES))
+
+        # Fermati quando si supera il frame finale
+        if current_frame > end_frame:
+            break
+
+        ret, frame = video.read()
+
+        if not ret:
+            break
+
+        # Applica la sottrazione dello sfondo
+        fgMask = backSub.apply(frame)
+
+        # Pre-elaborazione: rimuovi il rumore dalla maschera
+        fgMask = cv2.erode(fgMask, None, iterations=2)
+        fgMask = cv2.dilate(fgMask, None, iterations=2)
+
+        # Trova i contorni degli oggetti in movimento
+        contours, _ = cv2.findContours(fgMask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+
+        ball_found = False
+        for contour in contours:
+            # Filtra i contorni in base alla loro area
+            area = cv2.contourArea(contour)
+            if area < 100 or area > 1500:  # Limiti di area modificati
+                continue
+
+            # Approssimazione del contorno per verificare se è circolare
+            perimeter = cv2.arcLength(contour, True)
+            approx = cv2.approxPolyDP(contour, 0.02 * perimeter, True)
+
+            if len(approx) < 5:  # Assicurati che il contorno sia sufficientemente circolare
+                continue
+
+            # Trova il cerchio minimo che racchiude il contorno
+            ((x, y), radius) = cv2.minEnclosingCircle(contour)
+
+            # Verifica che il cerchio abbia una dimensione valida
+            if radius > 5 and radius < 30:
+                # Controlla se la pallina è all'interno dell'area di interesse
+                if left_limit < x < right_limit:
+                    # Disegna un cerchio intorno alla pallina
+                    cv2.circle(frame, (int(x), int(y)), int(radius), (0, 255, 0), 2)
+                    ball_found = True
+                    prev_center = (int(x), int(y))
+                    prev_radius = radius
+
+        # Se non trova la pallina, non disegnare alcun cerchio blu
+
+        # Ridimensiona il frame alla dimensione dello schermo
+        resized_frame = cv2.resize(frame, (screen_width, screen_height))
+
+        # Scrivi il frame elaborato nel video di output
+        out.write(frame)
+
+        # Mostra il frame ridimensionato (adattato allo schermo)
+        cv2.imshow('Frame', resized_frame)
+
+        # Esci premendo 'q'
+        if cv2.waitKey(1) & 0xFF == ord('q'):
+            break
+
+    # Rilascia le risorse
+    video.release()
+    out.release()
+    cv2.destroyAllWindows()
+
+# Esegui il tracciamento della pallina solo tra il secondo 34 e il secondo 94
+input_video = 'pingpong.mov'  # Nome del video corretto
+output_video = 'output_video_with_ball.mov'  # Nome del video di output
+area_margin = 150  # Modifica questo parametro per controllare quanto larga è la zona di interesse
+speed_factor = 2  # Modifica questo parametro per controllare la velocità del video finale
+
+track_ball_in_video(input_video, output_video, area_margin, speed_factor)
