@@ -99,3 +99,8 @@ file_name = 'annunci_padova.csv'
 scraping_immobiliare(base_url, file_name)
 
 print(f"I dati degli annunci sono stati salvati in {file_name}")
+
+
+# Note:
+# Questo programma esegue lo scraping di annunci immobiliari da un sito web,
+# estraendo informazioni dettagliate e salvandole in un file CSV.

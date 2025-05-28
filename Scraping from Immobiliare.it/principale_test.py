@@ -111,3 +111,9 @@ def conta_annunci(db_file):
 crea_db_e_inserisci_dati(csv_file, db_file)
 conta_annunci(db_file)
 genera_report(db_file)
+
+
+# Note:
+# Questo programma crea un database SQLite da un file CSV di annunci immobiliari,
+# inserisce i dati nel database e genera report sui primi 10 appartamenti con il prezzo minore e il totale del prezzo
+# più le spese condominiali, oltre a contare il numero totale di annunci nel database.

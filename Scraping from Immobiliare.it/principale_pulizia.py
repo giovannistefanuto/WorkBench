@@ -84,3 +84,9 @@ file_output = 'annunci_padova_puliti.csv'
 pulisci_dati(file_input, file_output)
 
 print(f"Dati puliti salvati in {file_output}")
+
+
+
+#nel totale cosa fa questo programma (una sola frase completa):
+# Questo programma legge un file CSV di annunci immobiliari, pulisce e normalizza i dati in specifiche colonne
+# e salva il risultato in un nuovo file CSV.

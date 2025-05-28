@@ -46,3 +46,7 @@ for annuncio in annunci:
 
 # Se ci sono classi a dentro altre classi
 # nome = annuncio.find('a', class_='in-listingCardTitle').span.text
+
+
+# Questo programma estrae gli annunci di affitto da una pagina web di immobiliare.it, 
+# estraendo informazioni come prezzo, nome e descrizione dell'annuncio.
